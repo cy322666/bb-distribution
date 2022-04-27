@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use AmoCRM\Client\AmoCRMApiClient;
 use App\Models\Account;
 use App\Services\amoCRM\Client;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -13,7 +14,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public Client $amoApi;
+    public AmoCRMApiClient $amoApi;
 
     public function __construct(Client $amoApi)
     {

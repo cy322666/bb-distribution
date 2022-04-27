@@ -14,13 +14,16 @@ class Lead extends Model
 
     protected $fillable = [
         'lead_id',
-        'contact_id',
+        'name',
         'created',
+        'price',
+        'created_user_id',
         'responsible_user_id',
+        'custom_fields',
+        'contact_id',
         'contact_responsible_user_id',
         'contact_created',
-        'is_test',
         'tags',
-        'status',
+        'is_test',
     ];
 }

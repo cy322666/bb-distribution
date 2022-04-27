@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\HookRequest;
 use App\Models\Account;
 use App\Models\Lead;
+use App\Services\amoCRM\Actions\GetOneLead;
 use App\Services\amoCRM\Client;
+use App\Services\amoCRM\Validations\CheckHookTest;
 use Carbon\Carbon;
 
 class DistributionController extends Controller
@@ -19,30 +21,31 @@ class DistributionController extends Controller
      */
     public function hook(HookRequest $request)
     {
-        $request_array = $request->validated()['add'][0];
+        $lead = GetOneLead::searchLead($this->amoApi, $request->validated()['add'][0]['id']);
 
-        $contact = $this->amoApi
-            ->leads()
-            ->getOne($request_array['id'])
-            ->getMainContact();
-
+        $contact = $lead->getMainContact();
+dd($lead);
         Lead::query()->create([
-            'lead_id' => $request_array['id'],
-            'name'    => $request_array['name'],
-            'created' => Carbon::create($request_array['date_create'])->format('Y-m-d H:i:s'),
-            'price'   => $request_array['price'],
-            'created_user_id'  => $request_array['created_user_id'],
+            'lead_id' => $lead->getId(),
+            'name'    => $lead->getName(),
+            'created' => Carbon::create($lead->getCreatedAt())->format('Y-m-d H:i:s'),
+            'price'   => $lead->getPrice(),
+            'status_id' => $lead->getStatusId(),
+            'created_user_id' => $lead->getCreatedBy(),
+            'responsible_user_id' => $lead->getResponsibleUserId(),
 
-            'responsible_user_id' => $request_array['responsible_user_id'],
-            'custom_fields'   => $request_array[''],
+            'custom_fields' => json_encode($lead->getCustomFieldsValues()->toArray()),
 
-            'contact_id' => $contact?->getId(),
+            'contact_id' => $lead->getMainContact()?->getId(),
             'contact_responsible_user_id' => Carbon::create($contact?->getCreatedAt())->format('Y-m-d H:i:s'),
             'contact_created' => $contact?->getResponsibleUserId(),
 
-            'tags' => json_encode($request_array['tags']),
+            'tags' => json_encode($lead->getTags()->toArray()),
 
-            'is_test' => '',
+            'is_test' => (new CheckHookTest())
+                ->setContact($contact)
+                ->setLead($lead)
+                ->validate(),
         ]);
     }
 }

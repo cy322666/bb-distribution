@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\amoCRM\Strategy\Actions;
+namespace App\Services\amoCRM\Actions;
 
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Exceptions\AmoCRMApiException;
@@ -19,7 +19,7 @@ abstract class CreateContact
 {
     /**
      * @param Viewer $viewer
-     * @return ?ContactModel 
+     * @return ?ContactModel
      */
     public static function createContact(Viewer $viewer, $amoApi): ?ContactModel
     {

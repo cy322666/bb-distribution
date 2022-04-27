@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\amoCRM\Strategy\Actions;
+namespace App\Services\amoCRM\Actions;
 
 use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\Exceptions\AmoCRMApiNoContentException;

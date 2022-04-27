@@ -18,6 +18,18 @@ class CreateLeadsTable extends Migration
             $table->timestamps();
 
             $table->integer('lead_id')->unique();
+            $table->string('name')->nullable();
+            $table->date('created')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('status_id')->nullable();
+            $table->integer('created_user_id')->nullable();
+            $table->integer('responsible_user_id')->nullable();
+            $table->json('custom_fields')->nullable();
+            $table->integer('contact_id')->nullable();
+            $table->integer('contact_responsible_user_id')->nullable();
+            $table->date('contact_created')->nullable();
+            $table->json('tags')->nullable();
+            $table->boolean('is_test')->default(false);
         });
     }
 
