@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use AmoCRM\Models\LeadModel;
 use App\Http\Requests\HookRequest;
 use App\Models\Account;
 use App\Models\Lead;
@@ -21,10 +22,17 @@ class DistributionController extends Controller
      */
     public function hook(HookRequest $request)
     {
-        $lead = GetOneLead::searchLead($this->amoApi, $request->validated()['add'][0]['id']);
+        $lead = $this->amoApi
+            ->leads()
+            ->getOne(
+                $request->validated()['add'][0]['id'],
+                [LeadModel::CONTACTS]
+            );
 
-        $contact = $lead->getMainContact();
-dd($lead);
+        $contact = $this->amoApi
+            ->contacts()
+            ->getOne($lead->getMainContact()->getId());
+
         Lead::query()->create([
             'lead_id' => $lead->getId(),
             'name'    => $lead->getName(),

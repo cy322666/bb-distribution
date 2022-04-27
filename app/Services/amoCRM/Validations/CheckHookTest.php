@@ -2,54 +2,102 @@
 
 namespace App\Services\amoCRM\Validations;
 
+use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\LeadModel;
 
+/**
+ * Сервис валидации контакта и сделки на предмет теста (!нарушение SRP)
+ */
 final class CheckHookTest
 {
-    private ?LeadModel $lead;
-    private ?ContactModel $contact;
+    /**
+     * @var LeadModel
+     */
+    private LeadModel $lead;
 
-    public function setContact(?ContactModel $model)
+    /**
+     * @var ContactModel
+     */
+    private ContactModel $contact;
+
+    /**
+     * @var CustomFieldsValuesCollection|null
+     */
+    private ?CustomFieldsValuesCollection $fieldsContact;
+
+    /**
+     * @var CustomFieldsValuesCollection|null
+     */
+    private ?CustomFieldsValuesCollection $fieldsLead;
+
+    /**
+     * @var array|string[] Массив с тестовыми почтами
+     */
+    private array $array_test_emails = [
+        'test@ya.ru',
+    ];
+
+    /**
+     * @var array|string[] Массив с тестовыми телефонами
+     */
+    private array $array_test_phones = [
+        '79996373955',
+    ];
+
+    /**
+     * @param ContactModel|null $model
+     * @return $this
+     */
+    public function setContact(?ContactModel $model): CheckHookTest
     {
         $this->contact = $model;
+        $this->fieldsContact = $model->getCustomFieldsValues();
 
         return $this;
     }
 
-    public function setLead(?LeadModel $model)
+    /**
+     * @param LeadModel|null $model
+     * @return $this
+     */
+    public function setLead(?LeadModel $model): CheckHookTest
     {
         $this->lead = $model;
+        $this->fieldsLead = $model->getCustomFieldsValues();
 
         return $this;
     }
 
+    /**
+     * Метод в котором будут проводиться все проверки
+     * @return bool
+     */
     public function validate() : bool
     {
-        $this->validateContactEmail();
-
-
+        return $this->validateContactEmails();
     }
 
-    private function validateContactEmail() : bool
+    /**
+     * Проверка на присутствие у контакта тестового email
+     * @return bool
+     */
+    private function validateContactEmails() : bool
     {
-        if($this->contact !== null) {
+        $emails = $this->fieldsContact->getBy('fieldCode', 'EMAIL')
+            ?->getValues()
+            ?->all();
 
-            $array_fields = $this->contact->getCustomFieldsValues()->toArray();
-            dd($array_fields);
+        foreach ($this->array_test_emails as $array_test_email) {
+
+            foreach ($emails as $email) {
+
+                if($array_test_email == $email->value) {
+
+                    return false;
+                }
+            }
         }
-
-
-        $haystack = 'ababcd';
-        $needle   = 'aB';
-
-        $pos      = strripos($haystack, $needle);
-
-        if ($pos === false) {
-            echo "К сожалению, ($needle) не найдена в ($haystack)";
-        } else {
-            echo "Поздравляем!\n";
-            echo "Последнее вхождение ($needle) найдено в ($haystack) в позиции ($pos)";
-        }
+        return true;
     }
 }
