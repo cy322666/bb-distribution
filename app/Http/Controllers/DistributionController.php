@@ -9,6 +9,7 @@ use AmoCRM\Models\LeadModel;
 use App\Http\Requests\HookRequest;
 use App\Models\Lead;
 use App\Services\amoCRM\Validations\CheckHookTest;
+use App\Services\QueueService;
 use Carbon\Carbon;
 
 class DistributionController extends Controller

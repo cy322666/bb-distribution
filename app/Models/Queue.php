@@ -12,6 +12,4 @@ use Illuminate\Database\Eloquent\Model;
 class Queue extends Model
 {
     use HasFactory;
-
-
 }
