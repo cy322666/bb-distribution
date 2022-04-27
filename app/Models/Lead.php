@@ -16,6 +16,7 @@ class Lead extends Model
         'lead_id',
         'name',
         'created',
+        'status_id',
         'price',
         'created_user_id',
         'responsible_user_id',

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use AmoCRM\Exceptions\AmoCRMApiException;
+use AmoCRM\Exceptions\AmoCRMMissedTokenException;
+use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Models\LeadModel;
 use App\Http\Requests\HookRequest;
-use App\Models\Account;
 use App\Models\Lead;
-use App\Services\amoCRM\Actions\GetOneLead;
-use App\Services\amoCRM\Client;
 use App\Services\amoCRM\Validations\CheckHookTest;
 use Carbon\Carbon;
 
@@ -19,6 +19,9 @@ class DistributionController extends Controller
      *
      * @param HookRequest $request
      * @return void
+     * @throws AmoCRMApiException
+     * @throws AmoCRMMissedTokenException
+     * @throws AmoCRMoAuthApiException
      */
     public function hook(HookRequest $request)
     {
@@ -36,7 +39,7 @@ class DistributionController extends Controller
         Lead::query()->create([
             'lead_id' => $lead->getId(),
             'name'    => $lead->getName(),
-            'created' => Carbon::create($lead->getCreatedAt())->format('Y-m-d H:i:s'),
+            'created' => Carbon::parse($lead->getCreatedAt())->format('Y-m-d H:i:s'),
             'price'   => $lead->getPrice(),
             'status_id' => $lead->getStatusId(),
             'created_user_id' => $lead->getCreatedBy(),
@@ -45,8 +48,8 @@ class DistributionController extends Controller
             'custom_fields' => json_encode($lead->getCustomFieldsValues()->toArray()),
 
             'contact_id' => $lead->getMainContact()?->getId(),
-            'contact_responsible_user_id' => Carbon::create($contact?->getCreatedAt())->format('Y-m-d H:i:s'),
-            'contact_created' => $contact?->getResponsibleUserId(),
+            'contact_responsible_user_id' => $contact?->getResponsibleUserId(),
+            'contact_created' => Carbon::parse($contact?->getCreatedAt())->format('Y-m-d H:i:s'),
 
             'tags' => json_encode($lead->getTags()->toArray()),
 

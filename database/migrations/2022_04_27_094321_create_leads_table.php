@@ -19,7 +19,7 @@ class CreateLeadsTable extends Migration
 
             $table->integer('lead_id')->unique();
             $table->string('name')->nullable();
-            $table->date('created')->nullable();
+            $table->dateTime('created')->nullable();
             $table->integer('price')->nullable();
             $table->integer('status_id')->nullable();
             $table->integer('created_user_id')->nullable();
@@ -27,7 +27,7 @@ class CreateLeadsTable extends Migration
             $table->json('custom_fields')->nullable();
             $table->integer('contact_id')->nullable();
             $table->integer('contact_responsible_user_id')->nullable();
-            $table->date('contact_created')->nullable();
+            $table->dateTime('contact_created')->nullable();
             $table->json('tags')->nullable();
             $table->boolean('is_test')->default(false);
         });

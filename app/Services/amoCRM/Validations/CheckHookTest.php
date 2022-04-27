@@ -72,6 +72,8 @@ final class CheckHookTest
     /**
      * Метод в котором будут проводиться все проверки
      * @return bool
+     * - true если проверки не пройдены
+     * - false если проверки пройдены
      */
     public function validate() : bool
     {
@@ -94,10 +96,10 @@ final class CheckHookTest
 
                 if($array_test_email == $email->value) {
 
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 }
